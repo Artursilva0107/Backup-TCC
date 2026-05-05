@@ -20,10 +20,10 @@ $erros = [];
 if ($action === 'delete' && $id) {
     $stmt = $pdo->prepare("DELETE FROM servicos WHERE id = ? AND empresa_id = ?");
     if ($stmt->execute([$id, $empresa_id])) {
-        header('Location: meus_servicos.php?msg=' . urlencode('Serviço excluído com sucesso!'));
+        header('Location: ../dashboard_empresa.php?msg=' . urlencode('Serviço excluído com sucesso!'));
         exit;
     } else {
-        header('Location: meus_servicos.php?msg=' . urlencode('Erro ao excluir serviço'));
+        header('Location: ../dashboard_empresa.php?msg=' . urlencode('Erro ao excluir serviço'));
         exit;
     }
 }
@@ -46,14 +46,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Atualizar serviço existente
             $stmt = $pdo->prepare("UPDATE servicos SET nome = ?, descricao = ?, valor = ?, duracao_estimada = ?, categoria = ?, status = ? WHERE id = ? AND empresa_id = ?");
             if ($stmt->execute([$nome, $descricao, $valor, $duracao_estimada, $categoria, $status, $id, $empresa_id])) {
-                header('Location: meus_servicos.php?msg=' . urlencode('Serviço atualizado com sucesso!'));
+                header('Location: ../dashboard_empresa.php?msg=' . urlencode('Serviço atualizado com sucesso!'));
                 exit;
             }
         } else {
             // Criar novo serviço
             $stmt = $pdo->prepare("INSERT INTO servicos (empresa_id, nome, descricao, valor, duracao_estimada, categoria, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
             if ($stmt->execute([$empresa_id, $nome, $descricao, $valor, $duracao_estimada, $categoria, $status])) {
-                header('Location: meus_servicos.php?msg=' . urlencode('Serviço cadastrado com sucesso!'));
+                header('Location: ../dashboard_empresa.php?msg=' . urlencode('Serviço cadastrado com sucesso!'));
                 exit;
             }
         }
@@ -154,7 +154,7 @@ if ($action === 'edit' && $id) {
     <div style="background: linear-gradient(135deg, #1a4a6f 0%, #0a2b3e 100%); padding: 30px 0;">
         <div style="max-width: 1280px; margin: 0 auto; padding: 0 20px;">
             <h1 style="color: white;"><?= $action === 'edit' ? '✏️ Editar Serviço' : '➕ Novo Serviço' ?></h1>
-            <a href="meus_servicos.php" style="color: white;">← Voltar para meus serviços</a>
+            <a href="../dashboard_empresa.php" style="color: white;">← Voltar para meus serviços</a>
         </div>
     </div>
     
@@ -208,7 +208,7 @@ if ($action === 'edit' && $id) {
                 
                 <div style="display: flex; gap: 15px; margin-top: 30px;">
                     <button type="submit" class="btn-save"><?= $action === 'edit' ? 'Atualizar Serviço' : 'Cadastrar Serviço' ?></button>
-                    <a href="meus_servicos.php" class="btn-cancel">Cancelar</a>
+                    <a href="../dashboard_empresa.php" class="btn-cancel">Voltar para meus serviços</a>
                 </div>
             </form>
         </div>
