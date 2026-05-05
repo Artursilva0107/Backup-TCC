@@ -9,8 +9,9 @@ if (!isEmpresa()) { header('Location: ../index.php'); exit; }
 $id = (int)($_GET['id'] ?? 0);
 if (!$id) { header('Location: index.php'); exit; }
 
-$stmt = $pdo->prepare("SELECT * FROM servicos WHERE id=?");
-$stmt->execute([$id]);
+$empresa_id = $_SESSION['empresa_id'];
+$stmt = $pdo->prepare("SELECT * FROM servicos WHERE id=? AND empresa_id=?");
+$stmt->execute([$id, $empresa_id]);
 $servico = $stmt->fetch();
 if (!$servico) { header('Location: index.php?msg='.urlencode('Serviço não encontrado').'&type=error'); exit; }
 
@@ -31,9 +32,9 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
     elseif (!is_numeric($valor)) $erros['valor'] = 'Valor inválido.';
 
     if (empty($erros)) {
-        $u = $pdo->prepare("UPDATE servicos SET nome=?,descricao=?,valor=?,duracao_estimada=?,categoria=?,status=? WHERE id=?");
-        if ($u->execute([$nome,$descricao,$valor,$duracao_estimada?:null,$categoria,$status,$id])) {
-            header('Location: index.php?msg='.urlencode('Serviço atualizado!').'&type=success'); exit;
+        $u = $pdo->prepare("UPDATE servicos SET nome=?,descricao=?,valor=?,duracao_estimada=?,categoria=?,status=? WHERE id=? AND empresa_id=?");
+        if ($u->execute([$nome,$descricao,$valor,$duracao_estimada?:null,$categoria,$status,$id,$empresa_id])) {
+            header('Location: ../empresas/meus_servicos.php?msg='.urlencode('Serviço atualizado!').'&type=success'); exit;
         }
         $erros['geral'] = 'Erro ao atualizar.';
     }
@@ -52,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
     <div class="logo"><h1>Service<span class="logo-span">Hub</span></h1><p>Gestão de Serviços &amp; Orçamentos</p></div>
     <nav class="main-nav"><ul>
       <li><a href="../index.php">Início</a></li>
-      <li><a href="index.php" class="active">Serviços</a></li>
+      <li><a href="../empresas/meus_servicos.php" class="active">Serviços</a></li>
       <li><a href="../clientes/index.php">Clientes</a></li>
       <li><a href="../orcamentos/index.php">Orçamentos</a></li>
       <li><a href="../relatorios/index.php">Relatórios</a></li>
@@ -63,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
 <div class="container">
   <div class="page-title-row">
     <h1>Editar Serviço</h1>
-    <a href="index.php" class="btn btn-ghost">← Voltar</a>
+    <a href="../empresas/meus_servicos.php" class="btn btn-ghost">Voltar para meus serviços</a>
   </div>
 
   <div class="form-container">
@@ -113,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
 
       <div style="display:flex;gap:10px;">
         <button type="submit" class="btn btn-primary btn-lg">Atualizar Serviço</button>
-        <a href="index.php" class="btn btn-ghost btn-lg">Cancelar</a>
+        <a href="../empresas/meus_servicos.php" class="btn btn-ghost btn-lg">Cancelar</a>
       </div>
     </form>
   </div>

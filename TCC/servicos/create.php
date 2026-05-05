@@ -6,6 +6,7 @@ require_once '../includes/functions.php';
 verificarLogin();
 if (!isEmpresa()) { header('Location: ../index.php'); exit; }
 
+$empresa_id = $_SESSION['empresa_id'];
 $erros = []; $nome=$descricao=$categoria=''; $valor=''; $duracao_estimada=''; $status=1;
 
 if ($_SERVER['REQUEST_METHOD']==='POST') {
@@ -21,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
     elseif (!is_numeric($valor)) $erros['valor'] = 'Valor inválido.';
 
     if (empty($erros)) {
-        $stmt = $pdo->prepare("INSERT INTO servicos (nome, descricao, valor, duracao_estimada, categoria, status) VALUES (?,?,?,?,?,?)");
-        if ($stmt->execute([$nome, $descricao, $valor, $duracao_estimada ?: null, $categoria, $status])) {
-            header('Location: index.php?msg='.urlencode('Serviço cadastrado com sucesso!').'&type=success'); exit;
+        $stmt = $pdo->prepare("INSERT INTO servicos (empresa_id, nome, descricao, valor, duracao_estimada, categoria, status) VALUES (?,?,?,?,?,?,?)");
+        if ($stmt->execute([$empresa_id, $nome, $descricao, $valor, $duracao_estimada ?: null, $categoria, $status])) {
+            header('Location: ../empresas/meus_servicos.php?msg='.urlencode('Serviço cadastrado com sucesso!').'&type=success'); exit;
         }
         $erros['geral'] = 'Erro ao cadastrar serviço.';
     }
@@ -42,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
     <div class="logo"><h1>Service<span class="logo-span">Hub</span></h1><p>Gestão de Serviços &amp; Orçamentos</p></div>
     <nav class="main-nav"><ul>
       <li><a href="../index.php">Início</a></li>
-      <li><a href="index.php" class="active">Serviços</a></li>
+      <li><a href="../empresas/meus_servicos.php" class="active">Serviços</a></li>
       <li><a href="../clientes/index.php">Clientes</a></li>
       <li><a href="../orcamentos/index.php">Orçamentos</a></li>
       <li><a href="../relatorios/index.php">Relatórios</a></li>
@@ -53,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
 <div class="container">
   <div class="page-title-row">
     <h1>Novo Serviço</h1>
-    <a href="index.php" class="btn btn-ghost">← Voltar</a>
+    <a href="../empresas/meus_servicos.php" class="btn btn-ghost">Voltar para meus serviços</a>
   </div>
 
   <div class="form-container">
@@ -103,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
 
       <div style="display:flex;gap:10px;">
         <button type="submit" class="btn btn-primary btn-lg">Salvar Serviço</button>
-        <a href="index.php" class="btn btn-ghost btn-lg">Cancelar</a>
+        <a href="../empresas/meus_servicos.php" class="btn btn-ghost btn-lg">Cancelar</a>
       </div>
     </form>
   </div>
